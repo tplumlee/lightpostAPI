@@ -1,0 +1,17 @@
+Package: lightpostAPI
+Title: Easily Query the Lightcast US Job Postings API
+Version: 0.0.0.9000
+Authors@R: 
+    person("Tucker", "Plumlee", , "tplumlee@crec.net", role = c("aut", "cre"))
+Description: Allows users to more easily query the Lightcast US Job Postings API via R and returns tabular data in a `tibble` format.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Imports: 
+    dplyr,
+    httr2,
+    jsonlite,
+    purrr,
+    rlang,
+    tidyr
