@@ -93,9 +93,9 @@ posting_facets <- function(..., status = "active", start = NULL, end = NULL,
   ## when
   if (is.null(start) && is.null(end)) {
     when <- unbox(status)
-  } else if (xor(is.null(start), is.null(end))) {
+  } else if (xor(is.null(start), is.null(end))) { # if one or the other (but not both) are missing
     stop("If specifying a timeframe, both start and end dates must be provided.")
-  } else if (xor(valid_date(start), valid_date(end))){
+  } else if (!(valid_date(start) && valid_date(end))){ # if one or the other or both are invalid...
     stop("Start and end dates must be formatted as 'YYYY-MM'")
   } else {
     when <- list(
@@ -153,7 +153,7 @@ posting_facets <- function(..., status = "active", start = NULL, end = NULL,
 
   }
 
-  # COMPOSE REQUEST
+  # COMPOSE REQUEST -------------------------------------------------------------------------------
   if (is.null(nested_rank)) {
 
     req <- httr2::request(BASE_URL) |> 
@@ -236,10 +236,18 @@ posting_facets <- function(..., status = "active", start = NULL, end = NULL,
     )
   }
 
+  if (length(buckets)==0) {
+    
+    clean_data <- NULL # if no data is returned by the API, return a NULL value
+
+  } else {
+
   clean_data <- buckets |> 
     purrr::map(unbucket) |> 
     purrr::list_rbind() |> 
     dplyr::rename(tidyr::all_of(old_names))
+    
+  }
 
   return(clean_data)
 }
