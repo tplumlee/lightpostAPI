@@ -7,12 +7,11 @@
 authenticate_api()
 }
 \value{
-A client object containing the token required for authenticating an
-API request.
+An OAuth client: An S3 list with class \code{httr2_oauth_client}.
 }
 \description{
 This function uses stored API credentials to create a client
-containing the token necessary to authorize any requests to the Lightcast
+containing the bearer token necessary to authorize any requests to the Lightcast
 API.
 }
 \details{

@@ -5,29 +5,22 @@
 \title{Request Faceted Job Postings Data from Lightcast's "Rankings" API Endpoints}
 \usage{
 posting_facets(
-  facet,
   ...,
   status = "active",
   start = NULL,
   end = NULL,
+  facet,
   rank_by = "unique_postings",
   rank_limit = 10,
   min_postings = 1,
   metrics = NULL,
   nested_facet = NULL,
-  nested_rank_by = NULL,
-  nested_rank_limit = NULL,
-  nested_min_postings = NULL
+  nested_rank_by = "unique_postings",
+  nested_rank_limit = 10,
+  nested_min_postings = 1
 )
 }
 \arguments{
-\item{facet}{A variable to use in faceting (i.e., diaggregating) the job
-postings data being queried. This will produce an aggregate measure,
-specified by \code{rank_by} (e.g., total unique postings), for each category
-of the faceting variable. Categories will be returned in descending
-order of the \code{rank_by} metric up to the number of categories/items
-specified by \code{rank_limit}.}
-
 \item{...}{Named arguments indicating a
 filter name and appropriate values to filter on. For example
 \code{soc5 = c("11-1011", "11-1021")} or \code{msa = "47900"}. For a listing of
@@ -46,6 +39,13 @@ be specified and be formatted as strings in the "YYYY-MM" format. For example,
 \code{start = "2025-01"} and \code{end = "2025-12"} would return results for postings
 active, posted, or expired (depending on the value of \code{status}) in the
 2025 calendar year.}
+
+\item{facet}{A variable to use in faceting (i.e., diaggregating) the job
+postings data being queried. This will produce an aggregate measure,
+specified by \code{rank_by} (e.g., total unique postings), for each category
+of the faceting variable. Categories will be returned in descending
+order of the \code{rank_by} metric up to the number of categories/items
+specified by \code{rank_limit}.}
 
 \item{rank_by}{A string indicating which metric to use when ranking \code{facet}
 categories. Defaults to \code{"unique_postings"}. For a listing of available
