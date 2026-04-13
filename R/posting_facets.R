@@ -72,20 +72,11 @@ posting_facets <- function(..., status = "active", start = NULL, end = NULL,
                            nested_min_postings = 1) {
   
   # SET UP/TEST FOR RATE LIMITING -----------------------------------------------------------------
-  if (!exists("remaining_limit", envir = the)) {
-    the$remaining_limit <- httr2::request(BASE_URL) |> 
-      httr2::req_url_path_append("status") |> 
-      httr2::req_oauth_client_credentials(client = the$client) |> 
-      httr2::req_headers(
-        Accept = "application/json",
-        "Content-Type" = "application/octet-stream"
-      ) |> 
-    httr2::req_perform() |> 
-    httr2::resp_header("ratelimit-remaining") |> 
-    as.numeric()
+  if (!exists("rate_limit", envir = the)) {
+    get_rate_limit()
   } else {
-    while (the$remaining_limit <= 5) {
-      Sys.sleep(1)
+    while (the$rate_limit["remaining"] <= 2) {
+      update_rate_limit()
     }
   }
 
@@ -181,6 +172,8 @@ posting_facets <- function(..., status = "active", start = NULL, end = NULL,
     ) |> 
     httr2::req_body_json(payload, auto_unbox = FALSE) |> # turn off auto-unbox to preserve single-item arrays
     httr2::req_perform()
+
+  update_rate_limit(resp)
   
   # ERROR HANDLING (?) ----------------------------------------------------------------------------
 

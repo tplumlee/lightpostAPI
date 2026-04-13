@@ -54,7 +54,7 @@ set_api_creds <- function(id, secret) {
 #' Authorize Access to Lightcast API
 #' 
 #' @description This function uses stored API credentials to create a client
-#' containing the token necessary to authorize any requests to the Lightcast
+#' containing the bearer token necessary to authorize any requests to the Lightcast
 #' API.
 #' 
 #' @details NOTE: ensure that your Lightcast API credentials have been
@@ -82,8 +82,7 @@ set_api_creds <- function(id, secret) {
 #' https://docs.lightcast.io/lightcast-api/docs/authentication-guide.
 #' For more information about using `httr2` to manage authorization
 #' using OAuth, see https://httr2.r-lib.org/articles/oauth.html.
-#' @return A client object containing the token required for authenticating an
-#' API request.
+#' @return An OAuth client: An S3 list with class `httr2_oauth_client`.
 #' @examples
 #' # Ensure API credentials have been saved to .Renviron before running
 #' \dontrun{
@@ -117,4 +116,43 @@ authenticate_api <- function() {
     message("OAuth client succesfully created.")
     }
   )
+}
+
+
+#' Get Lightcast JPA API Status
+#' 
+#' @description Quickly check the current status of the Lightcast Job Postings API.
+#' 
+#' @details This function wraps a basic request to the API's "Status" endpoint, which returns details
+#' regarding it's current health. This function is also used to check the current request rate limit
+#' when starting a new session, or after waiting to let the limit reset.
+#' 
+#' @return If the HTTP request succeeds, and the status code is ok (e.g. 200), an HTTP response: an S3 
+#' list with class `httr2_response`.
+#' 
+#' @examples
+#' \dontrun{
+#' resp <- lightcastapi_status()
+#' 
+#' httr2::resp_status(resp)
+#' # retrieves numeric HTTP status code
+#' 
+#' httr2::resp_status_desc(resp)
+#' # retrieves a brief textual description of status
+#' }
+#
+#' @export
+
+lightcastapi_status <- function() {
+  # TODO: add error handling if "too many requests"
+  resp <- httr2::request(BASE_URL) |> 
+    httr2::req_url_path_append("status") |> 
+    httr2::req_oauth_client_credentials(client = the$client) |> 
+    httr2::req_headers(
+      Accept = "application/json",
+      "Content-Type" = "application/octet-stream"
+    ) |> 
+    httr2::req_perform()
+
+  return(resp)
 }
